@@ -1,4 +1,4 @@
-name: Daily MTProto Proxy Build
+name: MTProto Docker Build
 
 on:
   schedule:
@@ -37,6 +37,9 @@ jobs:
       # 5. Compile for ARM64 & push to Docker Hub
       - name: Build and push Docker image
         uses: docker/build-push-action@master
+        env:
+          DOCKER_BUILD_RECORD_UPLOAD: false
+          DOCKER_BUILD_SUMMARY: false
         with:
           context: .
           platforms: linux/arm64
