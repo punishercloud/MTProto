@@ -1,0 +1,43 @@
+name: Daily MTProto Proxy Build
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at 12:00 AM UTC
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-26.04 
+
+    steps:
+      # 1. Download the MTProto source code
+      - name: Checkout MTProto Code
+        uses: actions/checkout@master
+        with:
+          repository: seriyps/mtproto_proxy
+          ref: master
+
+      # 2. Set up QEMU (Allows GitHub's Intel servers to compile ARM64 code)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+
+      # 3. Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+
+      # 4. Log in to Docker
+      - name: Login to Docker Hub
+        uses: docker/login-action@master
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      # 5. Compile for ARM64 & push to Docker Hub
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/arm64
+          push: true
+          # This tags the image as "latest". Every day, it overwrites and purges the old one!
+          tags: ${{ secrets.DOCKER_USERNAME }}/mtproto-tgproxy:latest
