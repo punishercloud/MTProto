@@ -34,7 +34,7 @@ jobs:
 
       # 5. Compile for ARM64 & push to Docker Hub
       - name: Build and push Docker image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@master
         with:
           context: .
           platforms: linux/arm64
