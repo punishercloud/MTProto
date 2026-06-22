@@ -17,9 +17,11 @@ jobs:
           repository: seriyps/mtproto_proxy
           ref: master
 
-      # 2. Set up QEMU (Allows GitHub's Intel servers to compile ARM64 code)
+      # 2. Set up QEMU
       - name: Set up QEMU
         uses: docker/setup-qemu-action@master
+        with:
+          cache-image: false
 
       # 3. Set up Docker Buildx
       - name: Set up Docker Buildx
